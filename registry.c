@@ -700,3 +700,87 @@ DeleteConfigRegistryValue(const WCHAR *config_name, const WCHAR *name)
 
     return (status == ERROR_SUCCESS);
 }
+
+/* Save bonding settings for a connection */
+int
+SaveBondingSettings(const WCHAR *config_name, BOOL bonding_enabled, const WCHAR *bonding_profile_path)
+{
+    HKEY regkey;
+    DWORD status;
+
+    if (!OpenConfigRegistryKey(config_name, &regkey, TRUE))
+    {
+        return 0;
+    }
+
+    /* Save bonding_enabled as DWORD */
+    status = SetRegistryValueNumeric(regkey, L"bonding_enabled", bonding_enabled ? 1 : 0);
+    if (status != 1)
+    {
+        RegCloseKey(regkey);
+        return 0;
+    }
+
+    /* Save bonding_profile_path if provided */
+    if (bonding_profile_path && wcslen(bonding_profile_path) > 0)
+    {
+        status = SetRegistryValue(regkey, L"bonding_profile_path", bonding_profile_path);
+        if (status != 1)
+        {
+            RegCloseKey(regkey);
+            return 0;
+        }
+    }
+    else
+    {
+        /* Delete the value if path is empty */
+        RegDeleteValue(regkey, L"bonding_profile_path");
+    }
+
+    RegCloseKey(regkey);
+    return 1;
+}
+
+/* Load bonding settings for a connection */
+int
+LoadBondingSettings(const WCHAR *config_name, BOOL *bonding_enabled, WCHAR *bonding_profile_path, DWORD path_len)
+{
+    HKEY regkey;
+    DWORD enabled_value = 0;
+
+    if (!bonding_enabled || !bonding_profile_path || path_len == 0)
+    {
+        return 0;
+    }
+
+    if (!OpenConfigRegistryKey(config_name, &regkey, FALSE))
+    {
+        /* No registry key exists, use defaults */
+        *bonding_enabled = FALSE;
+        bonding_profile_path[0] = L'\0';
+        return 1;
+    }
+
+    /* Load bonding_enabled */
+    if (GetRegistryValueNumeric(regkey, L"bonding_enabled", &enabled_value))
+    {
+        *bonding_enabled = (enabled_value != 0) ? TRUE : FALSE;
+    }
+    else
+    {
+        *bonding_enabled = FALSE;
+    }
+
+    /* Load bonding_profile_path */
+    if (GetRegistryValue(regkey, L"bonding_profile_path", bonding_profile_path, path_len))
+    {
+        /* Value loaded successfully */
+    }
+    else
+    {
+        bonding_profile_path[0] = L'\0';
+    }
+
+    RegCloseKey(regkey);
+    return 1;
+}

@@ -21,6 +21,7 @@ bonding_manager_t* bonding_manager_create(void);
 int bonding_manager_start(bonding_manager_t *mgr, bonding_profile_t *profile);
 int bonding_manager_stop(bonding_manager_t *mgr);
 int bonding_manager_get_status(bonding_manager_t *mgr, tunnel_state_t *states, int max_tunnels);
+bonding_state_t bonding_manager_get_state(bonding_manager_t *mgr);
 void bonding_manager_destroy(bonding_manager_t *mgr);
 
 #endif /* BONDING_MANAGER_H */

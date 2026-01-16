@@ -1,42 +1,42 @@
 # OpenVPN Channel Bonding Configuration
-# Profile: Example Bonding Profile
+# Profile: Active-Backup Redundancy Example
 # 
-# This is an example configuration file for channel bonding.
-# Copy this file and modify the parameters for your setup.
+# This example demonstrates active-backup mode for redundancy.
+# One tunnel is active, others are standby backups.
 
 # Bonding Mode
-# Options: round-robin, weighted, active-backup, adaptive
-bonding-mode round-robin
+# Options: round-robin, weighted, active-backup
+bonding-mode active-backup
 
 # Number of tunnels (must match number of [tunnel-N] sections below)
 tunnel-count 2
 
-# Tunnel 0 Configuration
+# Tunnel 0 Configuration (Primary/Active)
 [tunnel-0]
 # Physical NIC name (must match a detected NIC)
 nic-name "Ethernet"
 
 # OpenVPN server endpoint
-server-host vpn.example.com
+server-host vpn-primary.example.com
 server-port 1194
 
 # Base OpenVPN configuration file
 server-config base.ovpn
 
-# Distribution weight (for weighted mode, ignored in round-robin)
+# Distribution weight (ignored in active-backup mode, but required)
 weight 1
 
-# Tunnel 1 Configuration
+# Tunnel 1 Configuration (Backup/Standby)
 [tunnel-1]
 nic-name "Wi-Fi"
-server-host vpn.example.com
-server-port 1195
+server-host vpn-backup.example.com
+server-port 1194
 server-config base.ovpn
 weight 1
 
 # Standard OpenVPN parameters (applied to all tunnels)
 # These can also be in the base.ovpn file referenced above
-remote vpn.example.com
+remote vpn-primary.example.com
 proto udp
 dev tun
 ca ca.crt

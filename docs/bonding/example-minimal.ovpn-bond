@@ -1,0 +1,14 @@
+# OpenVPN Channel Bonding Configuration
+# Profile: Minimal Valid Configuration
+# 
+# This is the minimal valid configuration file.
+
+bonding-mode round-robin
+tunnel-count 1
+
+[tunnel-0]
+nic-name "Ethernet"
+server-host vpn.example.com
+server-port 1194
+server-config base.ovpn
+weight 1

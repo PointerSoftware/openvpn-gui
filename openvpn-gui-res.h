@@ -171,6 +171,33 @@
 #define ID_STATIC_QR                    501
 #define ID_TXT_QR                       502
 
+/* Bonding Configuration Dialog */
+#define ID_DLG_BONDING                  600
+#define ID_CHK_ENABLE_BONDING           601
+#define ID_CMB_BONDING_MODE             602
+#define ID_LST_AVAILABLE_NICS           603
+#define ID_LST_SELECTED_NICS            604
+#define ID_BTN_ADD_NIC                  605
+#define ID_BTN_REMOVE_NIC               606
+#define ID_EDT_PROFILE_NAME             607
+#define ID_BTN_SAVE_PROFILE             608
+#define ID_BTN_LOAD_PROFILE             609
+#define ID_CMB_PROFILE_LIST             610
+
+/* Bonding Status Dialog */
+#define ID_DLG_BONDING_STATUS           610
+#define ID_LST_TUNNEL_STATUS            611
+#define ID_TXT_TOTAL_BANDWIDTH          612
+#define ID_TXT_ACTIVE_TUNNELS           613
+#define ID_PROGRESS_TUNNEL_1            614
+#define ID_PROGRESS_TUNNEL_2            615
+#define ID_PROGRESS_TUNNEL_3            616
+#define ID_PROGRESS_TUNNEL_4            617
+#define ID_PROGRESS_TUNNEL_5            618
+#define ID_PROGRESS_TUNNEL_6            619
+#define ID_PROGRESS_TUNNEL_7            620
+#define ID_PROGRESS_TUNNEL_8            621
+
 /* General settings contd.. */
 
 #define ID_CHK_CONCAT_OTP               470
@@ -417,5 +444,30 @@
 
 /* Timer IDs */
 #define IDT_STOP_TIMER                  2500 /* Timer used to trigger force termination */
+
+/* Bonding Menu Items */
+#define IDM_BONDING_ENABLE              350
+#define IDM_BONDING_DISABLE             351
+#define IDM_BONDING_STATUS              352
+#define IDM_BONDING_CONFIGURE           353
+
+/* Bonding String Resources */
+#define IDS_MENU_BONDING                2300
+#define IDS_MENU_BONDING_ENABLE         2301
+#define IDS_MENU_BONDING_DISABLE        2302
+#define IDS_MENU_BONDING_STATUS         2303
+#define IDS_MENU_BONDING_CONFIGURE      2304
+#define IDS_BONDING_MODE_ROUND_ROBIN    2305
+#define IDS_BONDING_MODE_WEIGHTED       2306
+#define IDS_BONDING_MODE_ACTIVE_BACKUP  2307
+#define IDS_BONDING_MODE_ADAPTIVE       2308
+#define IDS_BONDING_DLG_TITLE           2309
+#define IDS_BONDING_STATUS_DLG_TITLE    2310
+#define IDS_BONDING_ERR_NO_NICS         2311
+#define IDS_BONDING_ERR_INVALID_CONFIG  2312
+#define IDS_BONDING_ERR_FAILED_START    2313
+#define IDS_BONDING_ERR_MIN_NICS        2314
+#define IDS_BONDING_NFO_ACTIVE          2315
+#define IDS_BONDING_NFO_INACTIVE        2316
 
 #endif                                       /* ifndef OPENVPN_GUI_RES_H */

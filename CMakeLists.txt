@@ -27,6 +27,8 @@ add_executable(${PROJECT_NAME} WIN32
     config_parser.c
     qr.c
     qrcodegen/qrcodegen.c
+    bonding/ui/bonding_dialog.c
+    bonding/ui/bonding_status.c
     res/openvpn-gui-res.rc
 )
 

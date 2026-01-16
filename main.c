@@ -50,6 +50,8 @@
 #include "save_pass.h"
 #include "echo.h"
 #include "as.h"
+#include "bonding/ui/bonding_dialog.h"
+#include "bonding/ui/bonding_status.h"
 
 #define OVPN_EXITCODE_ERROR    1
 #define OVPN_EXITCODE_TIMEOUT  2
@@ -735,6 +737,60 @@ WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             else if (LOWORD(wParam) == IDM_CLEARPASSMENU)
             {
                 ResetSavePasswords(c);
+            }
+            else if (LOWORD(wParam) == IDM_BONDING_CONFIGURE)
+            {
+                bonding_dialog_show(hwnd, c);
+            }
+            else if (LOWORD(wParam) == IDM_BONDING_ENABLE)
+            {
+                if (!c->bonding_profile)
+                {
+                    /* Open configuration dialog first */
+                    if (bonding_dialog_show(hwnd, c) != 0)
+                    {
+                        break; /* User cancelled */
+                    }
+                }
+                c->bonding_enabled = TRUE;
+                
+                /* Save bonding settings to registry */
+                WCHAR profile_path[MAX_PATH] = {0};
+                if (c->bonding_profile)
+                {
+                    bonding_profile_t *profile = (bonding_profile_t *)c->bonding_profile;
+                    if (profile->config_path)
+                    {
+                        MultiByteToWideChar(CP_UTF8, 0, profile->config_path, -1, profile_path, MAX_PATH);
+                    }
+                }
+                SaveBondingSettings(c->config_name, TRUE, profile_path);
+                
+                if (c->state == connected || c->state == connecting)
+                {
+                    /* Restart connection with bonding */
+                    RestartOpenVPN(c);
+                }
+                RecreatePopupMenus();
+            }
+            else if (LOWORD(wParam) == IDM_BONDING_DISABLE)
+            {
+                c->bonding_enabled = FALSE;
+                c->flags &= ~FLAG_BONDING_ACTIVE;
+                
+                /* Save bonding settings to registry */
+                SaveBondingSettings(c->config_name, FALSE, NULL);
+                
+                if (c->state == connected || c->state == connecting)
+                {
+                    /* Restart connection without bonding */
+                    RestartOpenVPN(c);
+                }
+                RecreatePopupMenus();
+            }
+            else if (LOWORD(wParam) == IDM_BONDING_STATUS)
+            {
+                bonding_status_display(hwnd, c);
             }
             break;
 

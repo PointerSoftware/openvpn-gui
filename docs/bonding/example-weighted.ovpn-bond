@@ -1,17 +1,17 @@
 # OpenVPN Channel Bonding Configuration
-# Profile: Example Bonding Profile
+# Profile: Weighted Distribution Example
 # 
-# This is an example configuration file for channel bonding.
-# Copy this file and modify the parameters for your setup.
+# This example demonstrates weighted distribution mode with 3 tunnels.
+# Traffic is distributed proportionally based on weight values.
 
 # Bonding Mode
-# Options: round-robin, weighted, active-backup, adaptive
-bonding-mode round-robin
+# Options: round-robin, weighted, active-backup
+bonding-mode weighted
 
 # Number of tunnels (must match number of [tunnel-N] sections below)
-tunnel-count 2
+tunnel-count 3
 
-# Tunnel 0 Configuration
+# Tunnel 0 Configuration (Highest weight - receives most traffic)
 [tunnel-0]
 # Physical NIC name (must match a detected NIC)
 nic-name "Ethernet"
@@ -23,14 +23,22 @@ server-port 1194
 # Base OpenVPN configuration file
 server-config base.ovpn
 
-# Distribution weight (for weighted mode, ignored in round-robin)
-weight 1
+# Distribution weight (higher = more traffic)
+weight 3
 
-# Tunnel 1 Configuration
+# Tunnel 1 Configuration (Medium weight)
 [tunnel-1]
 nic-name "Wi-Fi"
 server-host vpn.example.com
 server-port 1195
+server-config base.ovpn
+weight 2
+
+# Tunnel 2 Configuration (Lowest weight - receives least traffic)
+[tunnel-2]
+nic-name "LTE"
+server-host vpn.example.com
+server-port 1196
 server-config base.ovpn
 weight 1
 

@@ -38,6 +38,8 @@
 #include "openvpn-gui-res.h"
 #include "localization.h"
 #include "misc.h"
+#include "../bonding/ui/bonding_dialog.h"
+#include "../bonding/ui/bonding_status.h"
 
 #ifndef GUID_NULL
 #include <initguid.h>
@@ -240,6 +242,11 @@ CreatePopupMenus()
 
         AppendMenu(hMenu, MF_SEPARATOR, 0, 0);
 
+        /* Add bonding submenu */
+        CreateBondingMenu(hMenu, o.chead);
+
+        AppendMenu(hMenu, MF_SEPARATOR, 0, 0);
+
         hMenuImport = CreatePopupMenu();
         AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hMenuImport, LoadLocalizedString(IDS_MENU_IMPORT));
         AppendMenu(
@@ -355,6 +362,11 @@ CreatePopupMenus()
                        MF_STRING,
                        IDM_CLEARPASSMENU,
                        LoadLocalizedString(IDS_MENU_CLEARPASS));
+
+            AppendMenu(hMenuConn[i], MF_SEPARATOR, 0, 0);
+
+            /* Add bonding submenu */
+            CreateBondingMenu(hMenuConn[i], c);
 
             SetMenuStatus(c, c->state);
         }
@@ -782,6 +794,7 @@ SetMenuStatus(connection_t *c, conn_state_t state)
         {
             EnableMenuItem(hMenu, IDM_CLEARPASSMENU, MF_GRAYED);
         }
+        UpdateBondingMenuState(c);
     }
     else
     {
@@ -868,5 +881,111 @@ SetMenuStatus(connection_t *c, conn_state_t state)
         {
             EnableMenuItem(hMenuConn[i], IDM_CLEARPASSMENU, MF_GRAYED);
         }
+        UpdateBondingMenuState(c);
     }
+}
+
+/* Create bonding submenu */
+void
+CreateBondingMenu(HMENU hParentMenu, connection_t *c)
+{
+    if (!hParentMenu || !c)
+    {
+        return;
+    }
+
+    HMENU hMenuBonding = CreatePopupMenu();
+    if (!hMenuBonding)
+    {
+        return;
+    }
+
+    AppendMenu(hMenuBonding, MF_STRING, IDM_BONDING_ENABLE, LoadLocalizedString(IDS_MENU_BONDING_ENABLE));
+    AppendMenu(hMenuBonding, MF_STRING, IDM_BONDING_DISABLE, LoadLocalizedString(IDS_MENU_BONDING_DISABLE));
+    AppendMenu(hMenuBonding, MF_SEPARATOR, 0, 0);
+    AppendMenu(hMenuBonding, MF_STRING, IDM_BONDING_STATUS, LoadLocalizedString(IDS_MENU_BONDING_STATUS));
+    AppendMenu(hMenuBonding, MF_STRING, IDM_BONDING_CONFIGURE, LoadLocalizedString(IDS_MENU_BONDING_CONFIGURE));
+
+    AppendMenu(hParentMenu, MF_POPUP, (UINT_PTR)hMenuBonding, LoadLocalizedString(IDS_MENU_BONDING));
+
+    UpdateBondingMenuState(c);
+}
+
+/* Update bonding menu state */
+void
+UpdateBondingMenuState(connection_t *c)
+{
+    if (!c)
+    {
+        return;
+    }
+
+    HMENU hMenuLocal = NULL;
+    if (o.num_configs == 1)
+    {
+        hMenuLocal = hMenu; /* Use global main menu */
+    }
+    else
+    {
+        if (c->id >= 0 && hMenuConn && hMenuConn[c->id])
+        {
+            hMenuLocal = hMenuConn[c->id];
+        }
+    }
+
+    if (!hMenuLocal)
+    {
+        return;
+    }
+
+    /* Find bonding submenu */
+    int menu_count = GetMenuItemCount(hMenuLocal);
+    HMENU hMenuBonding = NULL;
+    for (int i = 0; i < menu_count; i++)
+    {
+        MENUITEMINFO mii = {0};
+        mii.cbSize = sizeof(MENUITEMINFO);
+        mii.fMask = MIIM_SUBMENU | MIIM_ID;
+        if (GetMenuItemInfo(hMenuLocal, i, TRUE, &mii))
+        {
+            if (mii.hSubMenu)
+            {
+                MENUITEMINFO submii = {0};
+                submii.cbSize = sizeof(MENUITEMINFO);
+                submii.fMask = MIIM_ID;
+                if (GetMenuItemInfo(mii.hSubMenu, 0, FALSE, &submii))
+                {
+                    if (submii.wID == IDM_BONDING_ENABLE)
+                    {
+                        hMenuBonding = mii.hSubMenu;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if (!hMenuBonding)
+    {
+        return;
+    }
+
+    /* Update menu item states */
+    BOOL bonding_active = (c->flags & FLAG_BONDING_ACTIVE) != 0;
+    BOOL is_connected = (c->state == connected || c->state == connecting || c->state == reconnecting);
+
+    /* Enable bonding when disconnected and bonding is disabled */
+    EnableMenuItem(hMenuBonding, IDM_BONDING_ENABLE, 
+                   (!bonding_active && c->state == disconnected) ? MF_ENABLED : MF_GRAYED);
+
+    /* Disable bonding when bonding is active */
+    EnableMenuItem(hMenuBonding, IDM_BONDING_DISABLE, 
+                   bonding_active ? MF_ENABLED : MF_GRAYED);
+
+    /* Status only available when bonding is active */
+    EnableMenuItem(hMenuBonding, IDM_BONDING_STATUS, 
+                   bonding_active ? MF_ENABLED : MF_GRAYED);
+
+    /* Configure always available */
+    EnableMenuItem(hMenuBonding, IDM_BONDING_CONFIGURE, MF_ENABLED);
 }

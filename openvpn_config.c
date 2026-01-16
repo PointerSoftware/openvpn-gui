@@ -28,6 +28,8 @@
 #include <windows.h>
 
 #include "main.h"
+#include "registry.h"
+#include "bonding/include/bonding_config.h"
 #include "openvpn-gui-res.h"
 #include "options.h"
 #include "localization.h"
@@ -151,6 +153,17 @@ AddConfigFileToList(int group, const TCHAR *filename, const TCHAR *config_dir)
     if (o.disable_save_passwords)
     {
         DisableSavePasswords(c);
+    }
+
+    /* Load bonding settings from registry */
+    WCHAR bonding_profile_path[MAX_PATH];
+    LoadBondingSettings(c->config_name, &c->bonding_enabled, bonding_profile_path, MAX_PATH);
+    if (wcslen(bonding_profile_path) > 0)
+    {
+        /* Load the bonding profile */
+        char profile_path_utf8[MAX_PATH];
+        WideCharToMultiByte(CP_UTF8, 0, bonding_profile_path, -1, profile_path_utf8, MAX_PATH, NULL, NULL);
+        c->bonding_profile = bonding_config_load(profile_path_utf8);
     }
     else
     {

@@ -1,0 +1,29 @@
+# OpenVPN Channel Bonding Configuration
+# Profile: Invalid Configuration Example
+# 
+# This file contains intentional errors for testing error handling:
+# - Missing tunnel-count
+# - Duplicate server ports
+# - Missing required parameters
+# - Invalid bonding mode
+
+# Bonding Mode (invalid value)
+bonding-mode invalid-mode
+
+# Missing tunnel-count parameter
+
+# Tunnel 0 Configuration
+[tunnel-0]
+# Missing nic-name
+server-host vpn.example.com
+server-port 1194
+# Missing server-config
+weight 1
+
+# Tunnel 1 Configuration
+[tunnel-1]
+nic-name "Wi-Fi"
+server-host vpn.example.com
+server-port 1194  # Duplicate port (same as tunnel-0)
+server-config base.ovpn
+weight -1  # Invalid negative weight

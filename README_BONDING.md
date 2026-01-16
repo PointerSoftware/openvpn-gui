@@ -43,10 +43,12 @@ This project extends OpenVPN GUI to support multi-channel bonding, allowing band
 ### 1. Clone Repository
 
 ```bash
-git clone <your-fork-url> openvpn-gui-bonding
+git clone https://github.com/OpenVPN/openvpn-gui.git openvpn-gui-bonding
 cd openvpn-gui-bonding
 git checkout feature/channel-bonding
 ```
+
+(Optional: To configure a fork remote, add it with `git remote add fork <your-fork-url>`)
 
 ### 2. Setup vcpkg
 

@@ -10,7 +10,8 @@
 typedef enum {
     BONDING_MODE_ROUND_ROBIN = 0,    /* Round-robin packet distribution */
     BONDING_MODE_WEIGHTED = 1,       /* Weighted distribution */
-    BONDING_MODE_ACTIVE_BACKUP = 2   /* Active/backup redundancy */
+    BONDING_MODE_ACTIVE_BACKUP = 2,  /* Active/backup redundancy */
+    BONDING_MODE_ADAPTIVE = 3        /* Adaptive bonding mode */
 } bonding_mode_t;
 
 /* NIC types */
@@ -35,5 +36,15 @@ typedef enum {
     NIC_STATUS_CONNECTED = 1,
     NIC_STATUS_UNKNOWN = 2
 } nic_status_t;
+
+/* Bonding manager state */
+typedef enum {
+    BONDING_STATE_STOPPED = 0,
+    BONDING_STATE_STARTING = 1,
+    BONDING_STATE_RUNNING = 2,
+    BONDING_STATE_STOPPING = 3,
+    BONDING_STATE_FAILED = 4,
+    BONDING_STATE_RECOVERING = 5
+} bonding_state_t;
 
 #endif /* BONDING_TYPES_H */

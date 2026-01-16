@@ -67,4 +67,8 @@ void ShowTrayBalloon(TCHAR *, TCHAR *);
 
 void CheckAndSetTrayIcon();
 
+void CreateBondingMenu(HMENU hParentMenu, connection_t *c);
+
+void UpdateBondingMenuState(connection_t *c);
+
 #endif /* ifndef TRAY_H */

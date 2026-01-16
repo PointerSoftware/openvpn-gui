@@ -329,6 +329,59 @@ BEGIN
     LTEXT "Scan this QR code on your mobile to proceed with authentication.", ID_TXT_QR, 0, 0, 10, 10, SS_CENTER | WS_VISIBLE | SS_EDITCONTROL
 END
 
+/* Bonding Configuration Dialog */
+ID_DLG_BONDING DIALOGEX 6, 18, 400, 500
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | DS_CENTER
+CAPTION "Channel Bonding Configuration"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+BEGIN
+    GROUPBOX "Profile Management", 201, 6, 12, 388, 50
+    LTEXT "Profile:", 202, 17, 25, 40, 10
+    COMBOBOX ID_CMB_PROFILE_LIST, 60, 23, 200, 200, CBS_DROPDOWNLIST | WS_TABSTOP
+    PUSHBUTTON "&Load", ID_BTN_LOAD_PROFILE, 270, 23, 50, 14
+    PUSHBUTTON "&Save", ID_BTN_SAVE_PROFILE, 330, 23, 50, 14
+    LTEXT "New Profile Name:", 203, 17, 42, 80, 10
+    EDITTEXT ID_EDT_PROFILE_NAME, 100, 40, 200, 12, ES_AUTOHSCROLL
+
+    GROUPBOX "Bonding Settings", 204, 6, 67, 388, 40
+    AUTOCHECKBOX "Enable Channel Bonding", ID_CHK_ENABLE_BONDING, 17, 80, 150, 10
+    LTEXT "Bonding Mode:", 205, 17, 95, 70, 10
+    COMBOBOX ID_CMB_BONDING_MODE, 90, 93, 200, 200, CBS_DROPDOWNLIST | WS_TABSTOP
+
+    GROUPBOX "NIC Selection", 206, 6, 112, 388, 280
+    LTEXT "Available NICs:", 207, 17, 125, 80, 10
+    LTEXT "Selected NICs:", 208, 210, 125, 80, 10
+    CONTROL "", ID_LST_AVAILABLE_NICS, "SysListView32", LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP | WS_VSCROLL, 17, 137, 170, 200
+    CONTROL "", ID_LST_SELECTED_NICS, "SysListView32", LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP | WS_VSCROLL, 210, 137, 170, 200
+    PUSHBUTTON "&>>", ID_BTN_ADD_NIC, 195, 200, 20, 14
+    PUSHBUTTON "&<<", ID_BTN_REMOVE_NIC, 195, 220, 20, 14
+
+    PUSHBUTTON "&OK", IDOK, 150, 400, 50, 14, BS_DEFPUSHBUTTON | WS_TABSTOP
+    PUSHBUTTON "&Cancel", IDCANCEL, 210, 400, 50, 14, WS_TABSTOP
+    PUSHBUTTON "&Apply", IDAPPLY, 270, 400, 50, 14, WS_TABSTOP
+END
+
+/* Bonding Status Dialog */
+ID_DLG_BONDING_STATUS DIALOGEX 6, 18, 500, 400
+STYLE WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | DS_CENTER
+CAPTION "Channel Bonding Status"
+FONT 8, "Microsoft Sans Serif"
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+BEGIN
+    CONTROL "", ID_LST_TUNNEL_STATUS, "SysListView32", LVS_REPORT | WS_BORDER | WS_TABSTOP | WS_VSCROLL, 10, 10, 480, 250
+    LTEXT "Total Bandwidth:", 209, 10, 270, 100, 10
+    LTEXT "", ID_TXT_TOTAL_BANDWIDTH, 120, 270, 150, 10
+    LTEXT "Active Tunnels:", 210, 10, 285, 100, 10
+    LTEXT "", ID_TXT_ACTIVE_TUNNELS, 120, 285, 150, 10
+    CONTROL "", ID_PROGRESS_TUNNEL_1, "msctls_progress32", WS_VISIBLE, 10, 310, 480, 10
+    CONTROL "", ID_PROGRESS_TUNNEL_2, "msctls_progress32", WS_VISIBLE, 10, 325, 480, 10
+    CONTROL "", ID_PROGRESS_TUNNEL_3, "msctls_progress32", WS_VISIBLE, 10, 340, 480, 10
+    CONTROL "", ID_PROGRESS_TUNNEL_4, "msctls_progress32", WS_VISIBLE, 10, 355, 480, 10
+    PUSHBUTTON "&Refresh", IDRETRY, 200, 370, 50, 14, WS_TABSTOP
+    PUSHBUTTON "&Close", IDCANCEL, 260, 370, 50, 14, WS_TABSTOP
+END
+
 STRINGTABLE
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 BEGIN
@@ -620,5 +673,32 @@ once as Administrator to update the registry."
     IDS_NFO_OVPN_STATE_TCP_CONNECT  "Establishing TCP connection"
     IDS_NFO_OVPN_STATE_AUTH_PENDING "Authentication pending"
     IDS_NFO_OVPN_STATE_UNKNOWN      "?"
+
+    /* Bonding menu items */
+    IDS_MENU_BONDING                 "Channel Bonding"
+    IDS_MENU_BONDING_ENABLE          "Enable Bonding"
+    IDS_MENU_BONDING_DISABLE         "Disable Bonding"
+    IDS_MENU_BONDING_STATUS          "Bonding Status"
+    IDS_MENU_BONDING_CONFIGURE       "Configure Bonding"
+
+    /* Bonding modes */
+    IDS_BONDING_MODE_ROUND_ROBIN     "Round-Robin"
+    IDS_BONDING_MODE_WEIGHTED        "Weighted"
+    IDS_BONDING_MODE_ACTIVE_BACKUP   "Active-Backup"
+    IDS_BONDING_MODE_ADAPTIVE        "Adaptive"
+
+    /* Bonding dialog titles */
+    IDS_BONDING_DLG_TITLE            "Channel Bonding Configuration"
+    IDS_BONDING_STATUS_DLG_TITLE     "Channel Bonding Status"
+
+    /* Bonding error messages */
+    IDS_BONDING_ERR_NO_NICS           "No network interfaces available for bonding."
+    IDS_BONDING_ERR_INVALID_CONFIG    "Invalid bonding configuration. Please check your settings."
+    IDS_BONDING_ERR_FAILED_START     "Failed to start channel bonding. %ls"
+    IDS_BONDING_ERR_MIN_NICS         "At least 2 network interfaces must be selected for bonding."
+
+    /* Bonding status messages */
+    IDS_BONDING_NFO_ACTIVE            "Bonding Active"
+    IDS_BONDING_NFO_INACTIVE          "Bonding Inactive"
 
 END

@@ -8,7 +8,6 @@ add_library(bonding STATIC
     src/openvpn_manager.c
     src/packet_distributor.c
     src/nic_detector.c
-    service/bonding_service.c
     service/service_ipc.c
     ui/bonding_dialog.c
     ui/bonding_status.c
@@ -26,6 +25,7 @@ target_include_directories(bonding PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/service
     ${CMAKE_CURRENT_SOURCE_DIR}/ui
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/..  # Parent directory for main.h, misc.h
 )
 
 # Link Windows networking libraries
@@ -40,6 +40,24 @@ target_compile_definitions(bonding PRIVATE
     _UNICODE
     UNICODE
     WIN32_LEAN_AND_MEAN
+)
+
+# Compiler warnings
+if(MSVC)
+    target_compile_options(bonding PRIVATE /W4)
+else()
+    target_compile_options(bonding PRIVATE -Wall -Wextra)
+endif()
+
+# Service executable
+add_executable(bonding_service
+    service/bonding_service.c
+)
+
+target_link_libraries(bonding_service PRIVATE bonding)
+
+target_include_directories(bonding_service PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Tests

@@ -47,4 +47,8 @@ DWORD GetConfigRegistryValue(const WCHAR *config_name, const WCHAR *name, BYTE *
 
 int DeleteConfigRegistryValue(const WCHAR *config_name, const WCHAR *name);
 
+/* Bonding settings per connection */
+int SaveBondingSettings(const WCHAR *config_name, BOOL bonding_enabled, const WCHAR *bonding_profile_path);
+int LoadBondingSettings(const WCHAR *config_name, BOOL *bonding_enabled, WCHAR *bonding_profile_path, DWORD path_len);
+
 #endif /* ifndef REGISTRY_H */

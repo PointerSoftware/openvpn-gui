@@ -98,6 +98,7 @@ typedef struct
 #define FLAG_DAEMON_PERSISTENT       (1 << 8)
 #define FLAG_WAIT_UNLOCK             (1 << 9)
 #define FLAG_CONFIG_DISABLED         (1 << 10)
+#define FLAG_BONDING_ACTIVE          (1 << 11)
 
 #define CONFIG_VIEW_AUTO             (0)
 #define CONFIG_VIEW_FLAT             (1)
@@ -179,6 +180,11 @@ struct connection
     char daemon_state[20];    /* state of openvpn.ex: WAIT, AUTH, GET_CONFIG etc.. */
     int id;                   /* index of config -- treat as immutable once assigned */
     connection_t *next;
+    
+    /* Bonding-related fields */
+    BOOL bonding_enabled;     /* TRUE if bonding is enabled for this connection */
+    void *bonding_profile;     /* Pointer to bonding_profile_t structure */
+    HWND hwndBondingStatus;   /* Handle to bonding status window */
 };
 
 /* All options used within OpenVPN GUI */
