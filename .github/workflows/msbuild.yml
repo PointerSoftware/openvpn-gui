@@ -54,7 +54,7 @@ jobs:
       uses: lukka/run-vcpkg@v11
       with:
         vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
-        vcpkgGitCommitId: d5ec528843d29e3a52d745a64b469f810b2cedbf
+        vcpkgGitCommitId: 8f095fa0342454181dc10f1b9c176c19b356ee67
 
     - name: Run CMake consuming CMakePreset.json and vcpkg.json by mean of vcpkg.
       uses: lukka/run-cmake@v10
