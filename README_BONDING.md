@@ -1,5 +1,7 @@
 # OpenVPN Channel Bonding
 
+> **📖 User Documentation**: For end-user installation, configuration, and usage guides, see the [Documentation Index](../docs/README.md).
+
 ## Overview
 
 This project extends OpenVPN GUI to support multi-channel bonding, allowing bandwidth aggregation across multiple physical network interfaces (Ethernet, WiFi, LTE, etc.) on Windows clients. The architecture combines client-side packet distribution with server-side Linux bonding to achieve higher throughput and redundancy.
@@ -233,3 +235,11 @@ openvpn-gui-bonding/
 6. **Windows Service**: Implement elevated-privilege service for TAP and routing management
 
 See `docs/bonding/architecture.md` for detailed architecture documentation.
+
+---
+
+**Related Documentation**:
+- [User Documentation](../docs/README.md) - End-user guides and tutorials
+- [User Guide](../docs/USER_GUIDE.md) - Installation and usage for end users
+- [FAQ](../docs/FAQ.md) - Frequently asked questions
+- [Troubleshooting Guide](../docs/TROUBLESHOOTING.md) - Problem solving
